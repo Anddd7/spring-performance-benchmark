@@ -22,7 +22,7 @@ import kotlin.random.Random
 class ReactorController(
     private val productRepository: ProductRepository
 ) {
-  private val webClient = WebClient.builder().baseUrl("http://localhost:18084").build()
+  private val webClient = WebClient.builder().baseUrl("http://localhost:18083").build()
 
   @RequestMapping("/product/{id}")
   fun findOne(@PathVariable id: Int) =

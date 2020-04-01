@@ -17,12 +17,6 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   /* kotlin coroutines*/
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
-  /* kotlin test */
-  testImplementation("io.mockk:mockk:1.9.3")
-  testImplementation("org.assertj:assertj-core:3.15.0")
-  testImplementation("org.junit.jupiter:junit-jupiter-engine")
 
   /* spring webflux*/
   implementation("org.springframework.boot:spring-boot-starter-webflux")
