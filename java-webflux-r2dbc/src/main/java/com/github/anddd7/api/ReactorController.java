@@ -1,5 +1,6 @@
 package com.github.anddd7.api;
 
+import com.github.anddd7.entity.Product;
 import com.github.anddd7.entity.ProductStockDTO;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -29,35 +30,40 @@ public class ReactorController {
 
   @GetMapping("/product/{id}")
   public Mono<ProductStockDTO> findOne(@PathVariable Integer id) {
-    return productRepository.findById(id).zipWith(fetchStock(id), ProductStockDTO::new);
+    Mono<Product> productMono = productRepository.findById(id);
+    Mono<BigDecimal> stockMono = fetchStock(id);
+    return productMono.zipWith(stockMono, ProductStockDTO::new);
   }
 
   private Mono<BigDecimal> fetchStock(Integer id) {
+    // simulate unstable network
+    int sleepTime = new Random(System.currentTimeMillis()).nextInt(1000);
+
     return webClient
         .get()
         .uri("/reactor/" + id + "/stock")
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
-        .bodyToMono(BigDecimal.class);
+        .bodyToMono(BigDecimal.class)
+        .delayElement(Duration.ofMillis(Integer.valueOf(sleepTime).longValue()));
   }
 
   @GetMapping("/product")
   public Flux<ProductStockDTO> findAll() {
-    return productRepository.findAll().flatMap(product ->
-        fetchStock(product.getId()).map(stock ->
-            new ProductStockDTO(product, stock)
-        )
-    );
+    return productRepository.findAll().flatMap(this::fetchProductStock);
   }
 
-  @GetMapping("/{id}/stock")
-  public Mono<BigDecimal> stock(@PathVariable Integer id) {
-    int sleepTime = new Random(System.currentTimeMillis()).nextInt(1000);
+  private Mono<ProductStockDTO> fetchProductStock(Product product) {
+    Mono<BigDecimal> stockMono = fetchStock(product.getId());
+    return stockMono.map(stock -> new ProductStockDTO(product, stock));
+  }
 
-    return Mono.fromCallable(() -> {
-      Random r = new Random(System.currentTimeMillis());
-      double positiveDouble = Math.abs(r.nextDouble());
-      return BigDecimal.valueOf(positiveDouble);
-    }).delayElement(Duration.ofMillis(Integer.valueOf(sleepTime).longValue()));
+
+  @GetMapping("/{id}/stock")
+  public BigDecimal stock(@PathVariable Integer id) {
+    // mock 3rd api, return immediately
+    Random r = new Random(System.currentTimeMillis());
+    double positiveDouble = Math.abs(r.nextDouble());
+    return BigDecimal.valueOf(positiveDouble);
   }
 }

@@ -46,6 +46,7 @@ class ReactorController(
   @GetMapping("/{id}/stock")
   fun stock(@PathVariable id: Int) =
       Mono.fromCallable { Random(id).nextFloat().let(::abs).toBigDecimal() }
+          // mock 3rd api, return immediately
           .delayElement(Duration.ofMillis(Random(id).nextLong(1, 1000)))
 }
 

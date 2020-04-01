@@ -30,9 +30,13 @@ class WebMvcController(
   @RequestMapping("/product")
   fun findAll(): List<ProductStockDTO> =
       productRepository.findAll()
+          .asSequence()
           .map { ProductStockDTO(it, fetchStock(it.id)) }
+          .toList()
 
   private fun fetchStock(id: Int): BigDecimal {
+    // simulate unstable network
+    // one thread one request, just block current thread/request
     Thread.sleep(Random(id).nextLong(1, 1000))
     return webClient.getForEntity("/reactor/$id/stock",BigDecimal::class.java).body!!
   }

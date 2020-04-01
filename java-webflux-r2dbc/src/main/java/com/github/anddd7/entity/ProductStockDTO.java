@@ -4,10 +4,7 @@ import java.math.BigDecimal;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("products")
 public class ProductStockDTO {
-
-  @Id
   private Integer id;
   private String name;
   private BigDecimal price;

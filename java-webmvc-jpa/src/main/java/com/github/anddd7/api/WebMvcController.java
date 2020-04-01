@@ -21,8 +21,8 @@ public class WebMvcController {
 
   private final ProductRepository productRepository;
 
-  private RestTemplate webClient = new RestTemplateBuilder().rootUri("http://localhost:18082")
-      .build();
+  private RestTemplate restTemplate = new RestTemplateBuilder()
+      .rootUri("http://localhost:18082").build();
 
   @Autowired
   public WebMvcController(ProductRepository productRepository) {
@@ -36,12 +36,14 @@ public class WebMvcController {
   }
 
   private BigDecimal fetchStock(Integer id) {
+    // simulate unstable network
+    // one thread one request, just block current thread/request
     try {
       Thread.sleep(new Random(System.currentTimeMillis()).nextInt(1000));
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    return webClient.getForEntity("/webmvc/" + id + "/stock", BigDecimal.class).getBody();
+    return restTemplate.getForEntity("/webmvc/" + id + "/stock", BigDecimal.class).getBody();
   }
 
   @GetMapping("/product")
@@ -57,6 +59,7 @@ public class WebMvcController {
 
   @GetMapping("/{id}/stock")
   public BigDecimal stock(@PathVariable Integer id) {
+    // mock 3rd api, return immediately
     Random r = new Random(System.currentTimeMillis());
     double positiveDouble = Math.abs(r.nextDouble());
     return BigDecimal.valueOf(positiveDouble);

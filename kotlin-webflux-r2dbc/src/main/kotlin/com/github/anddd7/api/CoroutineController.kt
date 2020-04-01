@@ -68,6 +68,7 @@ class CoroutineController(
 
   @GetMapping("/{id}/stock")
   suspend fun stock(@PathVariable id: Int) = withContext(Dispatchers.Default) {
+    // mock 3rd api, return immediately
     delay(Random(id).nextLong(1, 1000))
     Random(id).nextFloat().let(::abs).toBigDecimal()
   }

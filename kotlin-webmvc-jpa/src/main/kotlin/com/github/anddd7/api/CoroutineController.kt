@@ -2,6 +2,7 @@ package com.github.anddd7.api
 
 import com.github.anddd7.dto.ProductStockDTO
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,7 +24,7 @@ class CoroutineController(
   fun findOne(@PathVariable id: Int) = runBlocking{
     val product = async { productRepository.getOne(id) }
     val stock = async {fetchStock(id)}
-     ProductStockDTO(product.await() ,stock.await())
+    ProductStockDTO(product.await(), stock.await())
   }
 
   @RequestMapping("/product")
@@ -33,9 +34,10 @@ class CoroutineController(
         .map { it.await() }
   }
 
-  private fun fetchStock(id: Int): BigDecimal {
-    Thread.sleep(Random(id).nextLong(1, 1000))
-    return webClient.getForEntity("/reactor/$id/stock",BigDecimal::class.java).body!!
+  private suspend fun fetchStock(id: Int): BigDecimal {
+    // simulate unstable network
+    delay(Random(id).nextLong(1, 1000))
+    return webClient.getForEntity("/reactor/$id/stock", BigDecimal::class.java).body!!
   }
 
   @GetMapping("/{id}/stock")
