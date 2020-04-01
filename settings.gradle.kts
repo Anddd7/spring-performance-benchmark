@@ -16,8 +16,6 @@ pluginManagement {
 rootProject.name = "spring-performance-benchmark"
 
 include("kotlin-webmvc-jpa")
-include("kotlin-webmvc-netty-jpa")
 include("kotlin-webflux-r2dbc")
 include("java-webmvc-jpa")
-include("java-webmvc-netty-jpa")
 include("java-webflux-r2dbc")
