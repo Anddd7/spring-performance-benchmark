@@ -1,0 +1,8 @@
+server:
+  port: 18084
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:9999/local
+    username: test
+    password: test
