@@ -21,6 +21,7 @@ build/
 *.ipr
 out/
 .ideaDataSources
+dataSources
 
 ### NetBeans ###
 /nbproject/private/
